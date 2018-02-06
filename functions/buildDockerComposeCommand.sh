@@ -19,11 +19,10 @@ function buildDockerComposeCommand
         writeError "Config file ${configFile} not found. Aborting!"
     fi
 
-    while read line || [ -n "${line}" ]
+    while read line
     do
         # if empty line or commented out, skipp
-        # @todo add possibility to add new lines in file (not possible at the moment because of [ -n "${line}" ] in while)
-        if [ "${line:0:1}" == '#' ]; then
+        if [ "${line:0:1}" == '#' ] || [ -z "${line}" ]; then
             continue
         fi
 

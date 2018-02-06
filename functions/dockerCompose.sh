@@ -14,12 +14,15 @@ function dockerCompose
     local argument=${3}
 
     local envPath="${path}/environments"
-    local composePath="${path}/compose/"
+    local composePath="${path}/services/"
     local projectNamePath="${path}/.projectName"
     local envFile
 
     # import current user and group
     importCurrentUserGroup
+
+    #import docker host IP
+    importDockerHostIP
 
     # import .defaults and .env files
     importConfigs ${path}
@@ -32,10 +35,6 @@ function dockerCompose
 
     # find environment file to use
     environmentFile=$(findEnvironmentFile ${envPath} ${env})
-
-    { if [[ ${argument} == "up" ]]; then
-        writeInfo "Project can be accessed via http://localhost:${HTTP_PORT}"
-    fi }
 
     eval $(buildDockerComposeCommand ${environmentFile} ${composePath} ${*:3});
 }

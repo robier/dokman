@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 ###
- # Creates and exports variables HOST_USER_ID and HOST_GROUP_ID containing current user and group
+ # Creates and exports variables DOKMAN_HOST_USER_ID and DOKAMN_HOST_GROUP_ID containing current user and group
  #
- # @exports HOST_USER_ID HOST_GROUP_ID
+ # @exports DOKMAN_HOST_USER_ID DOKMAN_HOST_GROUP_ID
 ###
 function importCurrentUserGroup
 {
@@ -19,6 +19,6 @@ function importCurrentUserGroup
         groupID=$(id -g ${USER})
     fi }
 
-    export HOST_USER_ID=${userID}
-    export HOST_GROUP_ID=${groupID}
+    export DOKMAN_HOST_USER_ID=${userID}
+    export DOKMAN_HOST_GROUP_ID=${groupID}
 }
