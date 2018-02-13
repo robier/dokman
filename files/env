@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source "${path}/:dokmanDirName:/autoload.sh"
-
-env=${1}
-arguments=${@:2}
-
-dockerCompose ${path} ${env} ${arguments}

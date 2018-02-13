@@ -27,7 +27,7 @@ function enterDockerContainer
 
     containerName=$(findDockerContainerName ${containerName})
 
-    writeInfo "Entering docker ${containerName}"
+    info "Entering docker ${containerName}"
 
     eval $(buildDockerExecCommand ${type} ${containerName} ${@:4})
 }

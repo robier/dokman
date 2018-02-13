@@ -3,16 +3,18 @@
 set -e
 
 # returns dokman directory
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+readonly DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+# install everything in parent folder
+readonly installPath="${DIR}/../"
 
-DOKMAN_DIR_NAME=$(basename ${DIR})
+readonly DOKMAN_DIR_NAME=$(basename ${DIR})
 
 source "${DIR}/autoload.sh"
 
-writeInfo "Installing dockman!"
-
-# install everything in parent folder
-installPath="${DIR}/../"
+####################################################################
+####################################################################
+# Configuration
+####################################################################
 
 folders=(
     services
@@ -32,6 +34,7 @@ files=(
 helperScripts=(
     enter
     env
+    install
 )
 
 gitIgnore=(
@@ -41,55 +44,69 @@ gitIgnore=(
     /.projectName
 )
 
+####################################################################
+####################################################################
+# Install logic
+####################################################################
+
+title "Installing dockman!"
+
+title "Setup directories if needed..."
+
 # setup directories if needed
 for directory in "${folders[@]}"
 do
 	if [ ! -d "${installPath}${directory}" ]; then
         mkdir "${installPath}${directory}"
-        writeInfo "Created directory ${directory}"
+        success "Created directory ${directory}"
     else
-        writeInfo "Directory ${directory} already exists, skipping!"
+        info "Directory ${directory} already exists, skipping!"
     fi
 done
+
+title "Setup files if needed..."
 
 # setup files if needed
 for file in "${files[@]}"
 do
 	if [ ! -f "${installPath}${file}" ]; then
         touch "${installPath}${file}"
-        writeInfo "Created file ${file}"
+        success "Created file ${file}"
     else
-        writeInfo "File ${file} already exists, skipping!"
+        info "File ${file} already exists, skipping!"
     fi
 done
+
+title "Setup .gitignore if needed..."
 
 # setup git ignore file if needed
 if [ ! -f "${installPath}.gitignore" ]; then
     touch "${installPath}.gitignore"
-    writeInfo "Created file .gitignore"
+    success "Created file .gitignore"
     for line in "${gitIgnore[@]}"
     do
         echo "${line}" >> "${installPath}.gitignore"
     done
 else
-    writeInfo "File .gitignore already exists, skipping!"
+    info "File .gitignore already exists, skipping!"
 fi
 
-
+title "Setting up helper scripts if needed..."
 
 for helperScript in "${helperScripts[@]}"
 do
-    if [ ! -f "${installPath}{$helperScript}" ]; then
-        envScriptContent=$(cat "${DIR}/files/${helperScript}")
-        envScriptContent="${envScriptContent/:dokmanDirName:/$DOKMAN_DIR_NAME}"
+    pathToScript="${installPath}${helperScript}"
+    if [ ! -f "${pathToScript}" ]; then
+        scriptContent=$(cat "${DIR}/templates/${helperScript}")
+        scriptContent="${scriptContent//:dokmanDirName:/$DOKMAN_DIR_NAME}"
 
         # setup helper sh scripts
-        writeFile "${installPath}${helperScript}" "${envScriptContent}"
-        chmod +x "${installPath}${helperScript}"
-        writeInfo "Created bash helper ${helperScript}"
+        createFile "${pathToScript}" "${scriptContent}"
+        chmod +x "${pathToScript}"
+        success "Created bash helper ${helperScript}"
     else
-        writeInfo "Bash helper ${helperScript} already exists, skipping!"
+        info "Bash helper ${helperScript} already exists, skipping!"
     fi
 done
 
-writeInfo "Installation done!"
+success "Installation done!"

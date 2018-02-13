@@ -34,7 +34,8 @@ function findEnvironmentFile
     fi }
 
     { if [[ ! -f ${envFile} ]]; then
-        writeError "File ${envFile} does not exist! Aborting!"
+        error "File ${envFile} does not exist! Aborting!"
+        exit 1
     fi }
 
     echo ${envFile}

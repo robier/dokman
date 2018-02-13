@@ -8,9 +8,8 @@
 function isOsX
 {
     if [[ $(uname) == "Darwin" ]]; then
-        return 0
+        return
     fi
-    return 1
-}
 
-export -f isOsX
+    false
+}

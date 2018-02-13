@@ -15,5 +15,3 @@ function debug
     echo "[debug] ${*:1}"
     exit 1
 }
-
-export -f debug

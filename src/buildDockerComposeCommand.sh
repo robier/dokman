@@ -16,7 +16,8 @@ function buildDockerComposeCommand
     local command='docker-compose'
 
     if [[ ! -f ${configFile} ]]; then
-        writeError "Config file ${configFile} not found. Aborting!"
+        error "Config file ${configFile} not found. Aborting!"
+        exit 1
     fi
 
     while read line

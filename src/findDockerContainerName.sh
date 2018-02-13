@@ -15,13 +15,14 @@ function findDockerContainerName
 
     { if doesDockerContainerExists ${containerName}; then
         echo ${containerName}
-        return 0
+        return
     fi }
 
     { if doesDockerContainerExists ${name}; then
         echo ${name}
-        return 0
+        return
     fi }
 
-    writeError "Could not find docker container with name ${containerName} nor ${name}"
+    error "Could not find docker container with name ${containerName} nor ${name}"
+    exit 1
 }

@@ -49,6 +49,7 @@ Install will create some folders and files:
     - `services/ports` - houses only yaml files that opens local ports
 - `env` - helper script for building, upping, downing etc. docker containers
 - `enter` - helper script for entering container or running some arbitrary command on running container
+- `install` - helper script for installing your project (in this file you have access to bunch of bash helpers)
 
 Updating
 --------
@@ -132,6 +133,13 @@ docker/enter sh ${@:1}
 docker/enter bash ${@:1}
 ```
 
+------------
+
+There is a `install` helper script as well. It's used to create script that will help you with full 
+project install. That script has access to a bunch of bash helper functions. All helper functions 
+are located in `.dokman/helpers` folder. From name it should be obvious what they are doing, 
+but check them out to see what arguments should be provided. 
+
 Todo
 ----
-- add possibility for multiple instances running at teh same time?
+- add possibility for multiple instances running at the same time?

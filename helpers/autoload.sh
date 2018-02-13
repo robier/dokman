@@ -3,7 +3,7 @@
 ###
  # Autoload folder with functions, will not autoload functions that are inside sub folder.
  #
- # @param1 Path to folder containing bash functions
+ # @param1 string Path to folder containing bash functions
  # @prints Error message if provided path does not exist
  # @exits If folder provided does not exist
 ###

@@ -8,9 +8,8 @@
 function isLinux
 {
     if [[ $(uname -s) == "Linux" ]]; then
-        return 0
+        return
     fi
-    return 1
-}
 
-export -f isLinux
+    false
+}

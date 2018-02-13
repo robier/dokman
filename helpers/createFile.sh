@@ -6,7 +6,7 @@
  # @param1 Path to file with file name
  # @param2 Content to be written to file
 ###
-function writeFile
+function createFile
 {
     local path=${1}
     local content=${2}
@@ -17,5 +17,3 @@ EOF
 
     return 0
 }
-
-export -f writeFile

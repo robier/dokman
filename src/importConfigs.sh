@@ -12,7 +12,8 @@ function importConfigs
     # check if file .defaults does not exists
     local defaultsPath="${path}/.defaults"
     if [ ! -r ${defaultsPath} ]; then
-        writeError "File missing ${defaultsPath}"
+        error "File missing ${defaultsPath}"
+        exit 1
     fi
     # import default env variables
     importEnv "${path}/.defaults"

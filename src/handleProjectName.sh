@@ -17,22 +17,23 @@ function handleProjectName
     fi }
 
     { if [ "${currentProjectName}" == "${projectName}" ] && [ "${projectName}" != "" ]; then
-        writeInfo "Project name read from .projectName file"
-        return 0
+        info "Project name read from .projectName file"
+        return
     fi }
 
     { if [ -n projectName ]; then
-        writeInfo "Project name read from .env file, updated .projectName"
-        writeFile ${fileName} ${projectName}
-        return 0
+        info "Project name read from .env file, updated .projectName"
+        createFile ${fileName} ${projectName}
+        return
     fi }
 
     projectName="docker-project-${RANDOM}"
 
     { if [ ! -f ${fileName} ]; then
-        writeInfo "No .projectName file, creating arbitrary one, please change!"
-        writeFile ${fileName} ${projectName}
+        info "No .projectName file, creating arbitrary one, please change!"
+        createFile ${fileName} ${projectName}
+        return
     fi }
 
-    return 1
+    false
 }

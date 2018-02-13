@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source "${path}/:dokmanDirName:/autoload.sh"
+
+# if sh or bash is not specified, use sh as default
+if [ ${1} == "sh" ] || [ ${1} == "bash" ]; then
+    type=${1}
+    containerName=${2}
+    arguments=${@:3}
+else
+    type="sh"
+    containerName=${1}
+    arguments=${@:2}
+fi
+
+enterDockerContainer ${path} ${type} ${containerName} ${arguments}
