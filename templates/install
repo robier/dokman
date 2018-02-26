@@ -7,6 +7,7 @@
 
 readonly DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 readonly DOKMAN_DIR="${DIR}/:dokmanDirName:"
+readonly DOKMAN_SITE_NAME=":dokmanSiteName:"
 source "${DOKMAN_DIR}/helpers/autoload.sh"
 
 autoload "${DOKMAN_DIR}/helpers"
@@ -18,10 +19,14 @@ autoload "${DOKMAN_DIR}/helpers"
 
 function usage
 {
-    write "Script for installing {site} docker setup"
+    readonly siteName=$(foregoundColor "${DOKMAN_SITE_NAME}", "yellow")
+
+    write "Script for installing ${siteName} docker setup"
     write ""
     write "   -h | --help      for this help message"
     write "   -v | --verbose   for more verbose output"
+    # add your own switches description
+    write ""
 }
 
 verbose=0

@@ -51,6 +51,8 @@ gitIgnore=(
 
 title "Installing dockman!"
 
+readonly DOKMAN_SITE_NAME=$(questionForceNotEmptyResponse "Site name" "Site name can not be empty string")
+
 title "Setup directories if needed..."
 
 # setup directories if needed
@@ -99,6 +101,7 @@ do
     if [ ! -f "${pathToScript}" ]; then
         scriptContent=$(cat "${DIR}/templates/${helperScript}")
         scriptContent="${scriptContent//:dokmanDirName:/$DOKMAN_DIR_NAME}"
+        scriptContent="${scriptContent//:dokmanSiteName:/$DOKMAN_SITE_NAME}"
 
         # setup helper sh scripts
         createFile "${pathToScript}" "${scriptContent}"

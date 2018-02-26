@@ -11,6 +11,6 @@ function question
     local icon=$(foregroundColor "?" "cyan")
 
     local answer
-    read -p $"[${icon}] ${1} :" answer
+    read -p $"[${icon}] ${1}: " answer
     echo ${answer}
 }
