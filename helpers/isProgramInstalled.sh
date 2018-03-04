@@ -9,9 +9,7 @@
 ###
 function isProgramInstalled
 {
-    local found=$(type -P ${1})
-
-    if [ -n ${found} ]; then
+    if [ -n "$(type -P ${1})" ]; then
         return
     fi
 

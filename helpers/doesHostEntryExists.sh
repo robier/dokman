@@ -12,8 +12,7 @@ function doesHostEntryExists
     local host=${1}
     local ip=${2:-127.0.0.1}
 
-    local found=$(cat /etc/hosts | grep "^[^#]" | grep ${ip} | grep "\s${host}")
-    if [ -n "${found}" ]; then
+    if [ -n "$(cat /etc/hosts | grep "^[^#]" | grep ${ip} | grep "\s${host}")" ]; then
         return
     fi
 

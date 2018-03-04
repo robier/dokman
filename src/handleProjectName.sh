@@ -12,28 +12,26 @@ function handleProjectName
     local projectName=${COMPOSE_PROJECT_NAME}
     local currentProjectName
 
-    { if [ -f ${fileName} ]; then
+    if [ -f ${fileName} ]; then
         currentProjectName=$(cat ${fileName})
-    fi }
+    fi
 
-    { if [ "${currentProjectName}" == "${projectName}" ] && [ "${projectName}" != "" ]; then
-        info "Project name read from .projectName file"
+    if [ "${currentProjectName}" == "${projectName}" ] && [ "${projectName}" != "" ]; then
         return
-    fi }
+    fi
 
-    { if [ -n projectName ]; then
-        info "Project name read from .env file, updated .projectName"
+    if [ -n projectName ]; then
         createFile ${fileName} ${projectName}
         return
-    fi }
+    fi
 
     projectName="docker-project-${RANDOM}"
 
-    { if [ ! -f ${fileName} ]; then
-        info "No .projectName file, creating arbitrary one, please change!"
+    if [ ! -f ${fileName} ]; then
+        info "Variable $(foregroundColor "COMPOSE_PROJECT_NAME" "yellow") empty or not defined, creating arbitrary project name $(foregorundColor ${projectName} "yellow"), please change!"
         createFile ${fileName} ${projectName}
         return
-    fi }
+    fi
 
     false
 }

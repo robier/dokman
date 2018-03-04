@@ -16,18 +16,18 @@ function buildDockerComposeCommand
     local command='docker-compose'
 
     if [[ ! -f ${configFile} ]]; then
-        error "Config file ${configFile} not found. Aborting!"
+        error "Config file $(foregroundColor ${configFile} "yellow") not found. Aborting!"
         exit 1
     fi
 
     while read line
     do
-        # if empty line or commented out, skipp
-        if [ "${line:0:1}" == '#' ] || [ -z "${line}" ]; then
+        # if empty line or commented out, skip
+        if [ -z $(echo ${line} | grep -v "^\(\s\+\)\?#" | grep -v "^\(\s\+\)\?$") ]; then
             continue
         fi
 
-        local pathToYml=${path}${line}
+        local pathToYml="${path}/${line}"
         if [ -r ${pathToYml} ]; then
             command="${command} -f \"${pathToYml}\""
         fi

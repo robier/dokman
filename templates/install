@@ -5,8 +5,8 @@
 # Autoload scripts (do not touch this section)
 ####################################################################
 
-readonly DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-readonly DOKMAN_DIR="${DIR}/:dokmanDirName:"
+readonly SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+readonly DOKMAN_DIR="${SCRIPT_DIR}/:dokmanDirName:"
 readonly DOKMAN_SITE_NAME=":dokmanSiteName:"
 source "${DOKMAN_DIR}/helpers/autoload.sh"
 
@@ -19,7 +19,7 @@ autoload "${DOKMAN_DIR}/helpers"
 
 function usage
 {
-    readonly siteName=$(foregoundColor "${DOKMAN_SITE_NAME}", "yellow")
+    local siteName=$(foregoundColor "${DOKMAN_SITE_NAME}", "yellow")
 
     write "Script for installing ${siteName} docker setup"
     write ""

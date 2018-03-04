@@ -4,39 +4,26 @@
  # Finds right env file path
  #
  # @param1 Path to env folder
- # @param2 Env name
  # @prints Found env file path name
  # @exits If env file is not find in the system
 ###
 function findEnvironmentFile
 {
     local path=${1}
-    local env=${2}
-    local envPath="${path}/${env}"
     local envFile
 
-    { if [[ -d ${envPath} ]]; then
-        if isOsX ; then
-            envFile="${envPath}/osx"
-        fi
-        if isLinux ; then
-            envFile="${envPath}/linux"
-        fi
-        # @todo maybe add windows too...
-#        if isWin32 ; then
-#            envFile="${path}/win32"
-#        fi
-#        if isWin64 ; then
-#            envFile="${path}/win64"
-#        fi
+    if [ -d ${path} ] && [ -f "${path}/config" ]; then
+        # load file from environments sub-folder
+        envFile="${path}/config"
     else
-        envFile="${path}/${env}"
-    fi }
+        # load file from environments folder
+        envFile="${path}"
+    fi
 
-    { if [[ ! -f ${envFile} ]]; then
-        error "File ${envFile} does not exist! Aborting!"
+    if [ ! -f ${envFile} ]; then
+        error "Environment file $(foregroundColor ${path} "yellow") or $(foregroundColor "${path}/config" "yellow") does not exist!"
         exit 1
-    fi }
+    fi
 
     echo ${envFile}
 }

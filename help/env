@@ -1,0 +1,28 @@
+As `env` command is a wrapper for `docker-compose` it has almost the same API as `docker-compose`. You can
+up, down, stop, see logs and so on. Syntax should look like:
+
+docker/env <env> <command> [<args>]
+
+- env           - name of your environment
+- command       - one of `docker-compose` commands (to see list of all available commands run `docker-compose -h`)
+- args          - arguments of provided `docker-compose` command (to see list of all available arguments of one command run
+`dokcer-compose <command> -h`)
+
+Special flavored commands:
+- on - will run `dokcer-compose up --build --no-recreate -d` as shorthand with additional calling of event scripts
+- off - will run `dokcer-compose down` as shorthand with additional calling of event scripts
+
+
+Examples:
+
+docker/env dev on               # special command for upping containers
+docker/env dev off              # special command for downing containers
+docker/env dev build            # build dev environment
+docker/env dev up               # up all containers in dev environment in detach mode
+docker/env dev ps               # list all containers in dev environment
+docker/env dev logs             # show logs of all running containers
+docker/env dev logs php         # show only logs of php container
+docker/env dev logs -f php      # tail -f logs of php container
+docker/env dev kill php         # kill php container
+docker/env dev restart          # restart all containers
+docker/env dev restart php      # restart only php container
