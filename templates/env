@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 
-path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source "${path}/:dokmanDirName:/autoload.sh"
+set -e
 
-env=${1}
-arguments=${@:2}
+readonly SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+readonly DOKMAN_DIR="${SCRIPT_DIR}/:dokmanDirName:"
+source "${DOKMAN_DIR}/autoload.sh"
 
-dockerCompose ${path} ${env} ${arguments}
+if [ $# -eq 0 ]; then
+    info "No arguments provided, printing out help"
+    cat "${DOKMAN_DIR}/help/env"
+    exit 0
+fi
+
+readonly DOKMAN_ENV="${1}"
+
+dockerCompose ${DOKMAN_DIR} ${SCRIPT_DIR} ${DOKMAN_ENV} ${@:2}

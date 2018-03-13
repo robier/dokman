@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 
-
 ###
- # Wrapper for "docker-compose exec" command
+ # Wrapper for "docker compose run" command
  #
  # @param1 Path to docker folder including it
  # @param2 Environment file name to load
  # @param3... Arguments that are passed to "buildDockerComposeCommand"
 ###
-function enterDockerContainer
+function runDockerContainer
 {
     local scriptDir="${1}"
     local arguments=(${@:2})
@@ -21,16 +20,26 @@ function enterDockerContainer
 
     local flags=(
         -d
-        --privileged
+        --deps
+        --no-rm
         -T
+        --service-ports
     )
 
     local flagsWithValues=(
+        --name
+        --entrypoint
+        -e
+        -l
+        --label
         -u
         --user
-        --index
-        -e
-        --env
+        -p
+        --publish
+        -v
+        --volume
+        -w
+        --workdir
     )
 
     while [ ${#arguments[@]} ] ; do
@@ -69,8 +78,22 @@ function enterDockerContainer
         runCommands="${arguments[@]}"
     fi
 
+    # handle special flags
+
+    if inArray "--deps" "${dockerCommands[@]}"; then
+        dockerCommands=($(removeArrayItem "--deps" "${dockerCommands[@]}"))
+    else
+        dockerCommands+=("--no-deps")
+    fi
+
+    if inArray "--no-rm" "${dockerCommands[@]}"; then
+        dockerCommands=($(removeArrayItem "--no-rm" "${dockerCommands[@]}"))
+    else
+        dockerCommands+=("--rm")
+    fi
+
     if [ -z "${runCommands[@]}" ]; then
-        info "Entering existing $(foregroundColor "${container}" "yellow") container"
+        info "Entering fresh $(foregroundColor "${container}" "yellow") container"
         runCommands+=("/bin/sh -l")
     else
         info "Running $(foregroundColor "${runCommands[@]}" "yellow") on $(foregroundColor "${container}" "yellow") container"
@@ -80,5 +103,5 @@ function enterDockerContainer
         runCommands[0]="/bin/${runCommands[0]} -l"
     fi
 
-    eval "${scriptDir}/env ${env} exec ${dockerCommands[@]} ${container} ${runCommands[@]}"
+    eval "${scriptDir}/env ${env} run ${dockerCommands[@]} ${container} ${runCommands[@]}"
 }

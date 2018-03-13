@@ -10,14 +10,14 @@ function importCurrentUserGroup
     local userID
     local groupID
 
-    { if isOsX ; then
+    if isOsX ; then
         # Docker is running inside of VirtualBox on a Mac...
         userID=1000
         groupID=1000
     else
         userID=$(id -u ${USER})
         groupID=$(id -g ${USER})
-    fi }
+    fi
 
     export DOKMAN_HOST_USER_ID=${userID}
     export DOKMAN_HOST_GROUP_ID=${groupID}

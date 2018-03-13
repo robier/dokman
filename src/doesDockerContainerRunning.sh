@@ -7,11 +7,11 @@
  # @param1 Docker container name to check
  # @returns bool
 ###
-function doesDockerContainerExists
+function doesDockerContainerRunning
 {
     local dockerName=${1}
 
-    if [ "$(docker ps --no-trunc --filter name=^/${dockerName}$ -q -a)" ]; then
+    if [ "$(docker ps --no-trunc --filter name=^/${dockerName}$ -q)" ]; then
         return
     fi
 

@@ -10,10 +10,10 @@ function importProjectName
 {
     local fileName=${1}
 
-    { if [ ! -f ${fileName} ]; then
-        error "Could not import project name from file ${fileName}!"
-        exit 1
-    fi }
+    if [ -f ${fileName} ]; then
+        export COMPOSE_PROJECT_NAME=$(cat ${fileName})
+        return
+    fi
 
-    export COMPOSE_PROJECT_NAME=$(cat ${fileName})
+    false
 }

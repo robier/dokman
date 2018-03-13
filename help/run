@@ -1,0 +1,27 @@
+It's used for running one time scripts/tasks. Syntax should look like:
+
+docker/run [<options>] <env>:<service> [sh|bash] [<command>] [<args...>]
+
+- options           - options that can be passed to change behavior of container, all `docker-compose run -h` options are
+supported (two of them are turn on by default       --no-deps and --rm)
+- <env>:<service>   - to run some command inside php service in dev environment we would write `dev:php`
+- sh|bash           - sh is default
+- command           - any command that wou want to run on your container
+- args              - arguments that you want to send to your command
+
+By default run will not load linked containers and will remove container after run. If you do not provide any command and
+arguments, you will enter container.
+
+Special flavored options:
+- --deps    - will turn off default --no-deps switch
+- --no-rm   - will turn off default --rm switch
+
+Note: Notice special syntax for writing env and service delimited by :.
+
+Examples:
+
+docker/run dev:node yarn run build:development      # create node container form dev environment, run command `yarn run build:development` and exit 
+docker/run dev:node                                 # create node container form dev environment and enter it
+docker/run --user root dev:node                     # create node container form dev environment, login as root user
+dokcer/run --user root -w /tmp dev:node             # create node container form dev environment, login as root user to /tmp directory
+dokcer/run dev:node bash                            # create node container form dev environment, login to bash

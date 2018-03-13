@@ -1,0 +1,17 @@
+It's used to enter already running container. Syntax should look like:
+
+docker/enter [<options>] <env>:<service> [sh|bash] [<command>] [<args...>]
+
+- options           - same options provided by `docker-compose exec -h`
+- <env>:<service>   - to run some command inside php service in dev environment we would write `dev:php`
+- sh|bash           - sh is default
+- command           - command you want to run in running service
+- args              - arguments you want to add to command
+
+If command is not provided it will enter provided container. This command does not have any special flavors.
+
+Examples:
+
+docker/enter dev:php                        # enter already running php container
+docker/enter --user root dev:php            # enter already running php container as root user
+docker/enter dev:php composer install       # enter already running php container, run command `composer install` and exit
