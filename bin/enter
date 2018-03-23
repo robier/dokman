@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -e
+
+readonly DOKMAN_SCRIPT_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
+readonly DOKMAN_DIR=$(cd "${DOKMAN_SCRIPT_DIR}/$(dirname "$(dirname "$(readlink "$0")")")" && pwd)
+readonly DOKMAN_PROJECT_ROOT=$(cd "$( dirname "${DOKMAN_SCRIPT_DIR}" )" && pwd)
+
+source "${DOKMAN_DIR}/autoload.sh"
+
+if [ $# -eq 0 ]; then
+    info "No arguments provided, printing out help"
+    printHelp "${DOKMAN_DIR}" "enter"
+fi
+
+enterDockerContainer "${DOKMAN_SCRIPT_DIR}" "${@}"

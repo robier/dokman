@@ -1,0 +1,227 @@
+#!/usr/bin/env bash
+
+set -o errtrace # allows us to set global error handlers
+set -e
+
+SECONDS=0
+
+readonly DOKMAN_SCRIPT_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
+readonly DOKMAN_DIR=$(cd "${DOKMAN_SCRIPT_DIR}/$(dirname "$(dirname "$(readlink "$0")")")" && pwd)
+readonly DOKMAN_PROJECT_ROOT=$(cd "$( dirname "${DOKMAN_SCRIPT_DIR}" )" && pwd)
+
+source "${DOKMAN_DIR}/autoload.sh"
+
+importEnv "${DOKMAN_SCRIPT_DIR}/.env.dist"
+importEnv "${DOKMAN_SCRIPT_DIR}/.env"
+
+function _dokmanErrorHandler
+{
+    echo -n "Error occurred in file ${1} on line ${2}"
+    exit 1
+}
+
+trap '_dokmanErrorHandler ${BASH_SOURCE} ${LINENO}' ERR
+
+env=""
+verbose=0
+
+DOKMAN_REGISTERED_OPTIONS=()
+
+function _dokmanRegisterOption
+{
+    local flags="${1}"
+    local command="${2}"
+    local help="${3}"
+    local hasValue="${4}"
+
+    DOKMAN_REGISTERED_OPTIONS+=(
+    "${flags}"
+    "${command}"
+    "${help}"
+    "${hasValue}"
+    )
+}
+
+function dokmanOption
+{
+    _dokmanRegisterOption "${1}" "${2}" "${3}" 0
+}
+
+function dokmanValueOption
+{
+    _dokmanRegisterOption "${1}" "${2}" "${3}" 1
+}
+
+function dokmanHelp
+{
+    echo "Script for initial docker setup of $(foregroundColor "${DOCKER_PROJECT_NAME}" "yellow") project"
+
+    echo ""
+
+    echo "Usage: install [options] [environment]"
+
+    echo ""
+
+    echo "Available options:"
+
+    for ((i=0;i<${#DOKMAN_REGISTERED_OPTIONS[@]};i+=4))
+    do
+        printf "%3s %-30s %s \n" " " "${DOKMAN_REGISTERED_OPTIONS[i]}" "${DOKMAN_REGISTERED_OPTIONS[i+2]}"
+    done
+
+    echo ""
+
+    echo "Available environments:"
+
+    environments="$(ls --color=never "${DOKMAN_SCRIPT_DIR}/environments")"
+
+    for e in ${environments} ; do
+        printf "%3s %s\n" " " "${e}"
+    done
+
+    exit 0
+}
+
+function dokmanValidateEnv
+{
+    local env="${1}"
+
+    if ! hasEnv "${DOKMAN_SCRIPT_DIR}" "${env}" ; then
+        error "Not existing environment $(foregroundColor "${env}" "yellow")"
+        exit 1
+    fi
+}
+
+function dokmanValidateHosts
+{
+    title "Checking '/etc/hosts' file..."
+
+    for host in "$@"
+    do
+        if ! doesHostEntryExists "${host}" ; then
+            error "Domain ${host} is missing!"
+        else
+            success "Domain ${host} is set properly!"
+        fi
+    done
+}
+
+
+function dokmanInstall
+{
+    error "Function $(foregroundColor "dokmanInstall" "yellow") missing in $(foregroundColor ".install.sh" "yellow") script"
+    exit 1
+}
+
+function dokmanRunCommand
+{
+    error "Function $(foregroundColor "dokmanRunCommand" "yellow") can only be called inside $(foregroundColor "dokmanInstall" "yellow") function"
+    exit 1
+}
+
+dokmanOption "-h | --help" "dokmanHelp" "Shows this help message and exits"
+dokmanOption "-v | --verbose" "verbose=1" "Show more verbose output"
+
+if [ -f "${DOKMAN_SCRIPT_DIR}/.install.sh" ]; then
+    source "${DOKMAN_SCRIPT_DIR}/.install.sh"
+else
+    error "File missing $(foregroundColor "${DOKMAN_SCRIPT_DIR}/.install.sh")"
+    exit 1
+fi
+
+
+function _dokmanCompileOptionsCheck
+{
+    local options=()
+
+    for ((i=0;i<"${#DOKMAN_REGISTERED_OPTIONS[@]}";i+=4))
+    do
+        local option="${DOKMAN_REGISTERED_OPTIONS[i]})      ${DOKMAN_REGISTERED_OPTIONS[i+1]}"
+        option+="\n"
+        if [ "${DOKMAN_REGISTERED_OPTIONS[i+3]}" == 1 ]; then
+            option+='if [ -z "${2}" ] || [ "${2:0:1}" == "-" ] ; then'
+            option+="\n"
+            option+="error \"Missing value for option \$(foregroundColor \${1} yellow)\"\n"
+            option+="exit 1 \n"
+            option+="fi \n"
+            option+="shift\n"
+        fi
+        options+=("${option}")
+    done
+
+    local all=""
+    for opt in "${options[@]}"
+    do
+        all+="${opt};;\n"
+    done
+
+    echo -e "while [ \"\$1\" != \"\" ]; do
+        case \$1 in
+            ${all}
+            -*)
+                error \"Unknown option \$(foregroundColor \${1} yellow)\"
+                exit 1
+	        ;;
+	        *)
+                if [ \"\${env}\" ]; then
+                    error \"Only environment argument is supported\"
+                    exit 1
+                fi
+                dokmanValidateEnv \"\${1}\"
+                env=\"\${1}\"
+	        ;;
+        esac
+        shift
+    done"
+}
+
+eval "$(_dokmanCompileOptionsCheck)"
+
+readonly DOKMAN_VERBOSE="${verbose}"
+
+# remove unneeded functions
+unset -f _dokmanCompileOptionsCheck
+unset -f _dokmanRegisterOption
+
+function dokmanRunCommand
+{
+    local command="${1}"
+    local message="${2}"
+
+    if [ -n "${message}" ]; then
+        info "${message}"
+    fi
+
+    if [ "${DOKMAN_VERBOSE}" == 1 ]; then
+        eval "${command}"
+    else
+        eval "${command} > /dev/null"
+    fi
+}
+
+function dokmanOption
+{
+    error "Function $(foregroundColor "dokmanOption" "yellow") can not be used inside $(foregroundColor "dokmanInstall" "yellow") function"
+    exit 1
+}
+
+function dokmanValueOption
+{
+    error "Function $(foregroundColor "dokmanValueOption" "yellow") can not be used inside $(foregroundColor "dokmanInstall" "yellow") function"
+    exit 1
+}
+
+cd "${DOKMAN_PROJECT_ROOT}"
+
+dokmanInstall
+
+success "Main installation done."
+
+echo "" # spacing
+
+if [ "${env}" ]; then
+    runEventScript $(environmentFilePath "${DOKMAN_SCRIPT_DIR}" "${env}") "after-install"
+fi
+
+echo "" # spacing
+success "Done in $(foregroundColor "${SECONDS}s" "yellow")"
