@@ -3,20 +3,22 @@
 set -e
 
 # returns dokman directory
-readonly SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+readonly DOKMAN_RELATIVE_PATH=$(dirname "${BASH_SOURCE[0]}")
+
+readonly DOKMAN_SCRIPT_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
 # install everything in parent folder
-readonly installPath="${SCRIPT_DIR}/../"
+readonly installPath=$(dirname "${DOKMAN_RELATIVE_PATH}")
 
-readonly DOKMAN_DIR_NAME=$(basename ${SCRIPT_DIR})
+readonly DOKMAN_DIR_NAME=$(basename "${DOKMAN_SCRIPT_DIR}")
 
-source "${SCRIPT_DIR}/autoload.sh"
+source "${DOKMAN_SCRIPT_DIR}/autoload.sh"
 
 ####################################################################
 ####################################################################
 # Configuration
 ####################################################################
 
-folders=(
+readonly folders=(
     services
     services/links
     services/ports
@@ -26,20 +28,23 @@ folders=(
     scripts
 )
 
-files=(
-    .defaults
+readonly files=(
+    .env.dist
     .env
 )
 
-templateScripts=(
-    .bootstrap
-    enter
-    env
-    install
-    run
+readonly templateScripts=(
+    .install.sh
 )
 
-gitIgnore=(
+readonly symlinkScripts=(
+    env
+    run
+    enter
+    install
+)
+
+readonly gitIgnore=(
     "# exclude man .env file"
     /.env
     "# exclude all environments specific .env files"
@@ -53,7 +58,7 @@ gitIgnore=(
 
 title "Installing dockman!"
 
-readonly DOKMAN_SITE_NAME=$(questionForceNotEmptyResponse "Site name" "Site name can not be empty string")
+readonly DOKMAN_PROJECT_NAME=$(questionForceNotEmptyResponse "Project name" "Project name can not be empty string")
 
 title "Setup directories if needed..."
 
@@ -61,8 +66,8 @@ title "Setup directories if needed..."
 for directory in "${folders[@]}"
 do
     label=$(foregroundColor "${directory}" "yellow")
-	if [ ! -d "${installPath}${directory}" ]; then
-        mkdir "${installPath}${directory}"
+	if [ ! -d "${installPath}/${directory}" ]; then
+        mkdir "${installPath}/${directory}"
         success "Created directory ${label}"
     else
         info "Directory ${label} already exists, skipping!"
@@ -74,9 +79,9 @@ title "Setup files if needed..."
 # setup empty files if needed
 for file in "${files[@]}"
 do
-    label=$(foregroundColor ".gitignore" "yellow")
-	if [ ! -f "${installPath}${file}" ]; then
-        touch "${installPath}${file}"
+    label=$(foregroundColor "${file}" "yellow")
+	if [ ! -f "${installPath}/${file}" ]; then
+        touch "${installPath}/${file}"
         success "Created file ${label}"
     else
         info "File ${label} already exists, skipping!"
@@ -87,12 +92,12 @@ title "Setup .gitignore if needed..."
 
 # setup git ignore file if needed
 label=$(foregroundColor ".gitignore" "yellow")
-if [ ! -f "${installPath}.gitignore" ]; then
-    touch "${installPath}.gitignore"
+if [ ! -f "${installPath}/.gitignore" ]; then
+    touch "${installPath}/.gitignore"
     success "Created file ${label}"
     for line in "${gitIgnore[@]}"
     do
-        echo "${line}" >> "${installPath}.gitignore"
+        echo "${line}" >> "${installPath}/.gitignore"
     done
 else
     info "File ${label} already exists, skipping!"
@@ -103,20 +108,37 @@ title "Copying template scripts if needed..."
 # setup files from templates
 for templateScript in "${templateScripts[@]}"
 do
-    pathToScript="${installPath}${templateScript}"
-    label=$(foregroundColor ${templateScript} "yellow")
+    pathToScript="${installPath}/${templateScript}"
+    label=$(foregroundColor "${templateScript}" "yellow")
     if [ ! -f "${pathToScript}" ]; then
-        scriptContent=$(cat "${SCRIPT_DIR}/templates/${templateScript}")
-        scriptContent="${scriptContent//:dokmanDirName:/$DOKMAN_DIR_NAME}"
-        scriptContent="${scriptContent//:dokmanSiteName:/$DOKMAN_SITE_NAME}"
+        scriptContent=$(cat "${DOKMAN_SCRIPT_DIR}/templates/${templateScript}")
 
         # setup template files
         createFile "${pathToScript}" "${scriptContent}"
-        chmod +x "${pathToScript}"
         success "Copied template file ${label}"
     else
         info "File ${label} already exists, skipping!"
     fi
 done
+
+title "Symlinking scripts if needed..."
+
+for symlinkScript in "${symlinkScripts[@]}"
+do
+    pathToScript="${installPath}/${symlinkScript}"
+    label=$(foregroundColor "${symlinkScript}" "yellow")
+    if [ ! -L "${pathToScript}" ]; then
+        ln -s "${DOKMAN_DIR_NAME}/bin/${symlinkScript}" "${pathToScript}"
+        success "Symlink for file ${label} created"
+    else
+        info "Symlink ${label} already exists, skipping!"
+    fi
+done
+
+title "Setting project name..."
+
+echo "COMPOSE_PROJECT_NAME=${DOKMAN_PROJECT_NAME}" > "${installPath}/.env.dist"
+success "Variable COMPOSE_PROJECT_NAME set as $(foregroundColor "${DOKMAN_PROJECT_NAME}" "yellow") in .env.dist configuration"
+
 
 success "Installation done!"

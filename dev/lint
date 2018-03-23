@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+set -e
+
+# This script is here for easier debugging and linking of dokman project.
+
+readonly DOKMAN_SCRIPT_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd )
+
+source "${DOKMAN_SCRIPT_DIR}/autoload.sh"
+
+function lint
+{
+    docker run -v "${DOKMAN_SCRIPT_DIR}:/mnt" koalaman/shellcheck --color --exclude=SC1090 "${@}" || true
+}
+
+docker pull koalaman/shellcheck:stable > /dev/null
+
+
+shopt -s dotglob # hidden files will also be "globable"
+if [ $# -eq 0 ]; then
+    title "Liniting all sh scripts in project..."
+
+    info "Checking scripts in $(foregroundColor "bin" "yellow") directory..."
+    lint bin/*
+
+    info "Checking scripts in $(foregroundColor "src/helpers" "yellow") directory..."
+    lint src/helpers/*.sh
+
+    info "Checking scripts in $(foregroundColor "src/dokman" "yellow") directory..."
+    lint src/dokman/*.sh
+
+    info "Checking template scripts in $(foregroundColor "templates" "yellow") directory..."
+    lint templates/*.sh
+
+    info "Checking script $(foregroundColor "install" "yellow")"
+    lint install
+
+    info "Checking script $(foregroundColor "autoload.sh" "yellow")"
+    lint autoload.sh
+
+    info "Checking script $(foregroundColor "checkout" "yellow")"
+    lint checkout
+
+    info "Checking script $(foregroundColor "dev/lint" "yellow")"
+    lint dev/lint
+else
+    title "Liniting provided scripts..."
+
+    label="$(foregroundColor "${*}" "yellow")"
+
+    if [ $# -eq 1 ]; then
+        info "Checking script ${label} ..."
+    else
+        info "Checking scripts ${label} ..."
+    fi
+
+    lint "${@}"
+fi
+
+success "Lint done"
+
+shopt -u dotglob # return default behavior (glob can not see hidden files)

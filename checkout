@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -eu
+
+readonly DOKMAN_SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+readonly DOKMAN_DIR=$(dirname "$(dirname "$(readlink -f "$0")")")
+
+source "${DOKMAN_SCRIPT_DIR}/autoload.sh"
+
+title "Updating dokman project"
+
+if [ -z "${1}" ]; then
+    DOKMAN_DESTINATION=$(questionForceNotEmptyResponse "Desired git branch, tag or commit" "Value missing")
+else
+    DOKMAN_DESTINATION="${1}"
+fi
+
+info "Fetching the project..."
+
+git -C "${DOKMAN_SCRIPT_DIR}" fetch > /dev/null
+
+info "Checking out $(foregroundColor "${DOKMAN_DESTINATION}" "yellow")..."
+
+git -C "${DOKMAN_SCRIPT_DIR}" checkout "${DOKMAN_DESTINATION}" > /dev/null
+
+success "Done"
+

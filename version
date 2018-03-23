@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -eu
+
+readonly DOKMAN_SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+readonly DOKMAN_DIR=$(dirname "$(dirname "$(readlink -f "$0")")")
+
+source "${DOKMAN_SCRIPT_DIR}/autoload.sh"
+
+readonly TAG=$(git -C "${DOKMAN_SCRIPT_DIR}" describe --tags --abbrev=0)
+readonly COMMIT=$(git -C "${DOKMAN_SCRIPT_DIR}" rev-parse --short HEAD)
+
+echo "${TAG}-${COMMIT}"
