@@ -15,15 +15,12 @@ function dockerCompose
     local env=${3}
     local arguments=("${@:4}")
 
-    local environmentsPath
+    local environmentPath
     local projectNamePath
     local environmentFile
 
-    environmentsPath=$(environmentFilePath "${path}" "${env}")
+    environmentPath=$(environmentFilePath "${path}" "${env}")
     projectNamePath=$(projectNameCacheFilePath "${dokmanDir}")
-
-    # find environment file to use
-    environmentFile=$(findEnvironmentFile "${environmentsPath}")
 
     if ! hasEnv "${path}" "${env}" ; then
         error "Environment $(foregroundColor "${env}" "yellow") is not defined in environments directory"
@@ -44,7 +41,7 @@ function dockerCompose
     # import .env.dist and .env files
     importConfigurations "${path}"
     # import env specific config if needed
-    importConfigurations "${environmentsPath}"
+    importConfigurations "${environmentPath}"
 
     handleProjectName "${projectNamePath}"
     if ! importProjectName "${projectNamePath}" ; then
@@ -68,24 +65,24 @@ function dockerCompose
     fi
 
     if [ "on" == "${command}" ] && [ "${currentlyRunning}" -eq "0" ]; then
-        runEventScript "${environmentsPath}" "before-on"
+        runEventScript "${environmentPath}" "before-on"
     fi
 
     if [ "off" == "${command}" ] && [ "${currentlyRunning}" -gt "0" ]; then
-        runEventScript "${environmentsPath}" "before-off"
+        runEventScript "${environmentPath}" "before-off"
     fi
 
-    eval "$(buildDockerComposeCommand "${environmentFile}" "${path}" "${arguments[@]}")";
+    eval "$(buildDockerComposeCommand "${environmentPath}" "${path}" "${arguments[@]}")";
 
-    if [ -f "${environmentsPath}" ]; then
+    if [ -f "${environmentPath}" ]; then
         return
     fi
 
     if [ "on" == "${command}" ] && [ "${currentlyRunning}" -eq "0" ]; then
-        runEventScript "${environmentsPath}" "after-on"
+        runEventScript "${environmentPath}" "after-on"
     fi
 
     if [ "off" == "${command}" ] && [ "${currentlyRunning}" -gt "0" ]; then
-        runEventScript "${environmentsPath}" "after-off"
+        runEventScript "${environmentPath}" "after-off"
     fi
 }

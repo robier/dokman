@@ -21,9 +21,8 @@ you run it for first time your should get directory structure like this:
 │   ├── *images/
 │   ├── install
 │   ├── *scripts/
+│   ├── *override.yml
 │   └── *services/
-│       ├── *links/
-│       └── *ports/
 ...
 ```
 
@@ -47,13 +46,12 @@ defined in file `.env.dist`.
 - `install` - Special **dokman** helper script.
 - `scripts` - Directory holding scripts that are pushed into docker container like some
 entry script, or some helper script that needs to be available inside container.
+- `override.yml` - Developer specific override for **docker-compose** `yml` files. 
+(there is also possibility to have override per environment)
 - `services` - Directory holding all **docker-compose** `yml` files. Philosophy is to create
 little building blocks as possible, so it can be easily reused. Having that
-in mind we have special directories for holding only `ports` and `links` by 
-default.
-- `services/ports` - Directory holding snippet of **docker-compose** `yml` files that are
-responsible only for exposing ports on host machine.
-- `services/links` - Directory holding snippet of **docker-compose** `yml` files that are
-responsible only for linking service with each other.
+in mind you can make folders and sub folders any way you like and organise your `yml` files 
+(ie. you can make a folder with `ports` where you will have only yml parts that
+exposes some service port inside docker to host machine).
 
 **Note:** You can add additional folders and sub-folders that suits your project needs.
