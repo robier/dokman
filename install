@@ -20,8 +20,6 @@ source "${DOKMAN_SCRIPT_DIR}/autoload.sh"
 
 readonly folders=(
     services
-    services/links
-    services/ports
     configurations
     environments
     images
@@ -49,6 +47,10 @@ readonly gitIgnore=(
     /.env
     "# exclude all environments specific .env files"
     /environments/*/.env
+    "# exclude global override"
+    /override.yml
+    "# exclude all environment specific override.yml files"
+    /environments/*/override.yml
 )
 
 ####################################################################
@@ -56,7 +58,7 @@ readonly gitIgnore=(
 # Install logic
 ####################################################################
 
-title "Installing dockman!"
+title "Installing dokman!"
 
 readonly DOKMAN_PROJECT_NAME=$(questionForceNotEmptyResponse "Project name" "Project name can not be empty string")
 

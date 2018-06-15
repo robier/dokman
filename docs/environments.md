@@ -61,13 +61,17 @@ Simple environment vs complex environment
 
 Simple environment allows you to simply define list of `YAML` files that will be
 used in specific environment. Use simple environment when you don't need:
-- to change any global variables
+- change any global variables
 - events
+- environment specific docker-compose override yml file
 
 While complex environment allows you to change variables or use any of **dokman**
 events.
 
 **Note:** You can also have developer specific `.env` file per environment that is 
+not part of git.
+
+**Note:** You can also have developer specific `override.yml` file per environment that is 
 not part of git.
 
 Configuration file syntax is the same, but only the naming is different. In simple
@@ -81,11 +85,14 @@ environment configuration is named `config` and it's under specific environment 
 │   ├── environments/
 │   │   ├── dev
 │   │   └── ci/
+│   │       ├── .env
+│   │       ├── .env.dist
 │   │       ├── config
-│   │       └── .env.dist
+│   │       └── override.yml
 │   └── ...
 ...
 ```
+
 Files `docker/environments/dev` and `docker/environments/ci/config` are
 environment configurations.
 

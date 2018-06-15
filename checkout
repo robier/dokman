@@ -3,7 +3,7 @@
 set -eu
 
 readonly DOKMAN_SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-readonly DOKMAN_DIR=$(dirname "$(dirname "$(readlink -f "$0")")")
+readonly DOKMAN_DIR=$(dirname "$(dirname "$(readlink "$0")")")
 
 source "${DOKMAN_SCRIPT_DIR}/autoload.sh"
 
