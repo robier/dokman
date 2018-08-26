@@ -13,7 +13,9 @@ if [ $# -eq 0 ]; then
     printHelp "${DOKMAN_DIR}" "env"
 fi
 
-readonly DOKMAN_ENV="${1}"
-export DOKMAN_ENV
+if [ -z "${DOKMAN_ENV}" ]; then
+    readonly DOKMAN_ENV="${1}"
+    export DOKMAN_ENV
+fi
 
 dockerCompose "${DOKMAN_DIR}" "${DOKMAN_SCRIPT_DIR}" "${DOKMAN_ENV}" "${@:2}"

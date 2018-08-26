@@ -12,4 +12,4 @@ This should update **dokman** to version you provided.
 
 **Note:** Before update check if there where any braking changes.
 
-**Note:** If you do not provide argument, you will be asked to provide tag|branch|commit
+**Note:** If you do not provide argument, you will be asked to provide tag|branch|commit.

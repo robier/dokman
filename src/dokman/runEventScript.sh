@@ -17,12 +17,20 @@ function runEventScript
 
     local commandPath="${path}/events/${event}.sh"
     local currentPwd="$(pwd)"
+    local eventNameStyled=$(foregroundColor "${event}" "yellow")
 
     if [ -f "${commandPath}" ]; then
-        info "Running event $(foregroundColor "${event}" "yellow") (script $(foregroundColor "${commandPath}" "yellow"))"
+
+        local icon
+        icon=$(foregroundColor "e" "cyan")
+
+        write '' >&2 # spacing
+        write "[${icon}] Running event ${eventNameStyled} (script $(foregroundColor "${commandPath}" "yellow"))" >&2
 
         cd "${DOKMAN_PROJECT_ROOT}"
         source "${commandPath}"
         cd "${currentPwd}"
+
+        write "[${icon}] Event ${eventNameStyled} finished" >&2
     fi
 }

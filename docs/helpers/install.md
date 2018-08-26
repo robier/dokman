@@ -1,35 +1,35 @@
 install helper
 --------------
 
-Install helper is here to ease your life with project install. Project install procedure should only
-create necessary directories for project to work. This should not depend on any environment.
+Install helper is here to ease your life with project install. Project install procedure should for example
+create necessary directories for project to work, or maybe populate database. After install project should be
+accessible.
 
 Install script syntax looks like:
 
 ```bash
-docker/install [-v|--verbose] [-h|--help] [your registered options] [environment]
+docker/install [-v|--verbose] [-h|--help] [your registered options] environment
 ```
-
-**Note:** Do not add creation of environment specific files or folders to global install script.  
 
 Install is specific as it requires `.install.sh` file in docker root to work. There is a lot of special functions
 to ease your way of writing install scripts:
-- `dokmanInstall` - main instalation function, all instalation logic should go in that function
-- `dokmanValidateHosts` - validates array of host strings in `/etc/hosts` file
-- `dokmanRunCommand` - used for running any command (handles verbose mode) 1st parametar is a actuall command, 2nd parametar is description
+- `dokmanInstall` - main installation function, all installation logic should go in that function
+- `dokmanRunCommand` - used for running any command (handles verbose mode) 1st parameter is a actual command, 2nd parameter is description
 - `dokmanOption` - used for registering new option to install command
 - `dokmanValueOption` - used for registering new option to install command that will hold a value
+- `dokmanValidateEnv` - validates provided env for existence
+- `dokmanValidateHosts` - validates array of host strings in `/etc/hosts` file 
+- `dokmanWaitHealthyService` - waits until all listed services becomes healthy
 
-**Note:** All dokman sh functions are also avaliable.
+**Note:** All dokman functions are also avaliable in install script.
 
 **Note:** You can register your own options via `dokmanOption` and `dokmanValueOption` functions, those new registered options
 would be shown when showing help for install script.
 
-If you call `docker/install` without environment provided, only `.install.sh` will be run. If environment is provided,
-install script will try to run (if it's exists) `docker/environments/{env}/events/after-install.sh`. All functions that
-are avaliable in `.install.sh` are also avaliable in `after-install.sh` event.
+All functions that are available in `.install.sh` are also available in `after-install.sh` event.
 
 Example of one symfony `.install.sh` file:
+
 ```bash
 #!/usr/bin/env bash
 
@@ -42,34 +42,54 @@ function dokmanInstall
     # checks if all specified hosts are registered in /etc/hosts file
     dokmanValidateHosts "${hosts[*]}"
 
-    title "Removing old configuration files if needed..."
-
-    dokmanRunCommand "rm -f ./app/config/parameters.yml" "Removing parameters.yml file"
+    if [ -L './.env' ] || [ ! -f './.env' ]; then
+        # check if .env is a symlink or if it missing
+        title "Removing old configuration files if needed..."
+        dokmanRunCommand "rm -f ./.env" "Removing .env file"
+        
+        title "Adding missing files..."
+        dokmanRunCommand "ln -s ./docker/configurations/env/${DOKMAN_ENV} .env" "Creating symlink for ${DOKMAN_ENV}/.env file..."
+    fi
 
     title "Adding missing folders if needed..."
 
     dokmanRunCommand "mkdir -p ./var/logs" "Creating var/logs/ folder..."
     dokmanRunCommand "mkdir -p ./var/cache" "Creating var/cache/ folder..."
+    
+    title "Docker handling..."
+    
+    dokmanRunCommand "docker/env ${DOKMAN_ENV} on" "Building and upping docker containers..."
+    # wait services mysql and elasticsearch to become healthy
+    dokmanWaitHealthyService mysql elasticsearch
+    
+    title "Dependencies..."
+    
+    # backend
+    dokmanRunCommand "docker/enter ${DOKMAN_ENV}:php composer install -n" "Installing php packages..."
+    # frontend
+    dokmanRunCommand "docker/run ${DOKMAN_ENV}:node npm install" "Installing JavaScript dependencies..."
+    dokmanRunCommand "docker/run ${DOKMAN_ENV}:node npm run build" "Building JavaScript dependencies..."
+    
+    # create tables
+    dokmanRunCommand "docker/enter ${DOKMAN_ENV}:php bin/console doctrine:schema:update --force" "Create tables..."
 }
 ```
-and it's `dev` `after-install.sh` event:
+
+Best practice should be that all configuration files (may or may not be part of git) exists in docker directory and that
+those configuration files are symlinked instead of just being copy/pasted.
+
+As in your dev environment you'l need some dummy data for easier working you can generate it via `after-install.sh` 
+event in `dev` environment: 
+
 ```bash
 #!/usr/bin/env bash
 
-title "Adding missing files..."
+title "Populate database..."
 
-dokmanRunCommand "ln -s ./../docker/configurations/parameters/dev.yml ./app/config/parameters.yml" "Creating symlink for parameters.yml file..."
-
-title "Docker handling..."
-
-dokmanRunCommand "docker/env dev on" "Building and upping docker containers..."
-
-title "Dependencies..."
-
-dokmanRunCommand "docker/enter dev:php composer install -n" "Installing php packages..."
-dokmanRunCommand "docker/run dev:node npm install" "Installing JavaScript dependencies..."
-dokmanRunCommand "docker/run dev:node npm run build" "Building JavaScript dependencies..."
+# create tables
+dokmanRunCommand "docker/enter dev:php bin/console doctrine:fixtures:load" "Loading database fixtures..."
 ```
+
 
 
 
