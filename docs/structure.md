@@ -17,6 +17,7 @@ you run it for first time your should get directory structure like this:
 │   ├── *.env
 │   ├── .env.dist
 │   ├── environments/
+│   ├── *events/
 │   ├── .gitignore
 │   ├── *images/
 │   ├── install
@@ -41,6 +42,7 @@ you have an access to all variables defined in `.env.dist` and `.env`. This scri
 defined in file `.env.dist`.
 - `.env.dist` - File holding project specific variables.
 - `environments` - Directory housing environments.
+- `events` - Directory housing [global events](./events.md).
 - `.gitignore` - File that defines that .env and environments/*/.env files are excluded in git.
 - `images` - Directory holding Dockerfile files if they are needed in project.
 - `install` - Special **dokman** helper script.

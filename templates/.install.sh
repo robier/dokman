@@ -1,10 +1,20 @@
 #!/usr/bin/env bash
 
-name=""
-
-dokmanValueOption '--name' 'name=${2}'
+readonly hosts=(
+    test.loc
+)
 
 function dokmanInstall
 {
-    dokmanRunCommand 'info "Hello ${name}"' "First command"
+    validateHostEntries "${hosts[@]}"
+
+    # setup configuration files
+
+    title 'Docker...'
+    runCommand "docker/env ${DOKMAN_ENV} on" "Building and upping docker containers..."
+
+    title 'Wait services...'
+    waitHealthyServices mysql elasticsearch logstash redis
+
+    # populate database or something like that
 }

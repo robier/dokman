@@ -6,10 +6,10 @@
  #
  # @param1 string Message to be written to stderr
 ###
-function error
+function warning
 {
     local icon
-    icon=$(foregroundColor "x" "red")
+    icon=$(foregroundColor "!" "yellow")
 
     write "[${icon}] ${1}"
 }

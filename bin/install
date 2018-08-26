@@ -11,9 +11,6 @@ readonly DOKMAN_PROJECT_ROOT=$(cd "$( dirname "${DOKMAN_SCRIPT_DIR}" )" && pwd)
 
 source "${DOKMAN_DIR}/autoload.sh"
 
-importEnv "${DOKMAN_SCRIPT_DIR}/.env.dist"
-importEnv "${DOKMAN_SCRIPT_DIR}/.env"
-
 function _dokmanErrorHandler
 {
     echo -n "Error occurred in file ${1} on line ${2}"
@@ -23,7 +20,7 @@ function _dokmanErrorHandler
 trap '_dokmanErrorHandler ${BASH_SOURCE} ${LINENO}' ERR
 
 env=""
-verbose=0
+verbose=false
 
 DOKMAN_REGISTERED_OPTIONS=()
 
@@ -54,11 +51,11 @@ function dokmanValueOption
 
 function dokmanHelp
 {
-    echo "Script for initial docker setup of $(foregroundColor "${DOCKER_PROJECT_NAME}" "yellow") project"
+    echo "Script for installing project environment"
 
     echo ""
 
-    echo "Usage: install [options] [environment]"
+    echo "Usage: install [options] environment"
 
     echo ""
 
@@ -82,45 +79,15 @@ function dokmanHelp
     exit 0
 }
 
-function dokmanValidateEnv
-{
-    local env="${1}"
-
-    if ! hasEnv "${DOKMAN_SCRIPT_DIR}" "${env}" ; then
-        error "Not existing environment $(foregroundColor "${env}" "yellow")"
-        exit 1
-    fi
-}
-
-function dokmanValidateHosts
-{
-    title "Checking '/etc/hosts' file..."
-
-    for host in "$@"
-    do
-        if ! doesHostEntryExists "${host}" ; then
-            error "Domain ${host} is missing!"
-        else
-            success "Domain ${host} is set properly!"
-        fi
-    done
-}
-
-
 function dokmanInstall
 {
     error "Function $(foregroundColor "dokmanInstall" "yellow") missing in $(foregroundColor ".install.sh" "yellow") script"
     exit 1
 }
 
-function dokmanRunCommand
-{
-    error "Function $(foregroundColor "dokmanRunCommand" "yellow") can only be called inside $(foregroundColor "dokmanInstall" "yellow") function"
-    exit 1
-}
 
 dokmanOption "-h | --help" "dokmanHelp" "Shows this help message and exits"
-dokmanOption "-v | --verbose" "verbose=1" "Show more verbose output"
+dokmanOption "-v | --verbose" "verbose=true" "Show more verbose output"
 
 if [ -f "${DOKMAN_SCRIPT_DIR}/.install.sh" ]; then
     source "${DOKMAN_SCRIPT_DIR}/.install.sh"
@@ -163,41 +130,33 @@ function _dokmanCompileOptionsCheck
                 exit 1
 	        ;;
 	        *)
-                if [ \"\${env}\" ]; then
-                    error \"Only environment argument is supported\"
-                    exit 1
-                fi
-                dokmanValidateEnv \"\${1}\"
-                env=\"\${1}\"
+	            if hasEnv \"\${DOKMAN_SCRIPT_DIR}\" \"\${env}\"; then
+	                env=\"\${1}\"
+	            else
+	                env=''
+	            fi
 	        ;;
         esac
         shift
-    done"
+    done
+
+    if [ -z \"\${env}\" ]; then
+        error 'No environment argument supplied, env must be last argument provided'
+        exit 1
+    fi"
 }
 
 eval "$(_dokmanCompileOptionsCheck)"
 
-readonly DOKMAN_VERBOSE="${verbose}"
+export DOKMAN_VERBOSE="${verbose}"
+export DOKMAN_ENV=${env}
+
+readonly DOKMAN_VERBOSE
+readonly DOKMAN_ENV
 
 # remove unneeded functions
 unset -f _dokmanCompileOptionsCheck
 unset -f _dokmanRegisterOption
-
-function dokmanRunCommand
-{
-    local command="${1}"
-    local message="${2}"
-
-    if [ -n "${message}" ]; then
-        info "${message}"
-    fi
-
-    if [ "${DOKMAN_VERBOSE}" == 1 ]; then
-        eval "${command}"
-    else
-        eval "${command} > /dev/null"
-    fi
-}
 
 function dokmanOption
 {
@@ -213,15 +172,19 @@ function dokmanValueOption
 
 cd "${DOKMAN_PROJECT_ROOT}"
 
+# run environment event if it exists
+runEventScript $(environmentFilePath "${DOKMAN_SCRIPT_DIR}" "${DOKMAN_ENV}") "before-install"
+
+# run global event if it exists
+runEventScript "${DOKMAN_SCRIPT_DIR}" "before-install"
+
 dokmanInstall
 
-success "Main installation done."
+# run environment event if it exists
+runEventScript $(environmentFilePath "${DOKMAN_SCRIPT_DIR}" "${DOKMAN_ENV}") "after-install"
 
-echo "" # spacing
+# run global event if it exists
+runEventScript "${DOKMAN_SCRIPT_DIR}" "after-install"
 
-if [ "${env}" ]; then
-    runEventScript $(environmentFilePath "${DOKMAN_SCRIPT_DIR}" "${env}") "after-install"
-fi
-
-echo "" # spacing
+write '' # spacing
 success "Done in $(foregroundColor "$(formatSeconds "${SECONDS}")" "yellow")"

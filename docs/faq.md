@@ -18,4 +18,7 @@ FAQ
     >Bash was selected for only one reason, no external dependencies for Mac and Linux (we do not care about Windows).
     Most of `bash` scripts works for Mac and Linux and if not there are some workarounds, also I wanted to learn bash :D.
     
-
+0. Is **dokman** only a wrapper around `docker-compose`?
+    >Main purpose of dokman is to be a wrapper but dokman also have really handy events system. For example you can 
+    attach some logic to be run after all docker containers are up and running, or maybe before. Or maybe you want to
+    populate database you have in your docker setup, after install.

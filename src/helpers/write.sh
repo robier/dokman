@@ -7,5 +7,5 @@
 ###
 function write
 {
-    echo -e "${1}"
+    echo -e "${1}" >&2
 }
