@@ -12,7 +12,7 @@ function backgroundColor
 {
     local message="${1}"
 
-    if ! isRichTextSupported ; then
+    if ! isRichTextSupported && ! isColorForced ; then
         echo -en "${message}"
         return
     fi
