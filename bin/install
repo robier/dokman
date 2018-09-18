@@ -21,6 +21,7 @@ trap '_dokmanErrorHandler ${BASH_SOURCE} ${LINENO}' ERR
 
 env=""
 verbose=false
+forceColors=false
 
 DOKMAN_REGISTERED_OPTIONS=()
 
@@ -87,7 +88,8 @@ function dokmanInstall
 
 
 dokmanOption "-h | --help" "dokmanHelp" "Shows this help message and exits"
-dokmanOption "-v | --verbose" "verbose=true" "Show more verbose output"
+dokmanOption "-v | --verbose" "verbose=true" "Prints out STDOUT of all commands"
+dokmanOption "-c | --colors" "forceColors=true" "Force color output"
 
 if [ -f "${DOKMAN_SCRIPT_DIR}/.install.sh" ]; then
     source "${DOKMAN_SCRIPT_DIR}/.install.sh"
@@ -150,9 +152,11 @@ eval "$(_dokmanCompileOptionsCheck)"
 
 export DOKMAN_VERBOSE="${verbose}"
 export DOKMAN_ENV=${env}
+export DOKMAN_FORCE_COLORS=${forceColors}
 
 readonly DOKMAN_VERBOSE
 readonly DOKMAN_ENV
+readonly DOKMAN_FORCE_COLORS
 
 # remove unneeded functions
 unset -f _dokmanCompileOptionsCheck
