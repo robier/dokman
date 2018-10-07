@@ -15,8 +15,8 @@ function importCurrentUserGroup
         userID=1000
         groupID=1000
     else
-        userID=$(id -u "${SUDO_USER:-$USER}")
-        groupID=$(id -g "${SUDO_USER:-$USER}")
+        userID=$(id -u "${USER}")
+        groupID=$(id -g "${USER}")
     fi
 
     export DOKMAN_HOST_USER_ID=${userID}
