@@ -18,7 +18,8 @@ function buildDockerComposeCommand
     local yamls=()
 
     # find environment file to use
-    local configFile=$(findEnvironmentFile "${envPath}")
+    local configFile
+    configFile=$(findEnvironmentFile "${envPath}")
 
     if [ ! -f "${configFile}" ]; then
         error "Config file $(foregroundColor "${configFile}" "yellow") not found. Aborting!"

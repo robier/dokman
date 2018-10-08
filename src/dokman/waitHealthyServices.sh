@@ -8,7 +8,7 @@ function waitHealthyServices
     # try every second for duration of 300 seconds
     local seconds=1
     local maxTries=300 # this is Sparta!
-    local maxSeconds=$((${seconds}*${maxTries}))
+    local maxSeconds=$((seconds*maxTries))
 
     local allServices=("$@")
     local waitServices=("$@")
@@ -23,9 +23,9 @@ function waitHealthyServices
         healthyServices=()
 
         for service in "${waitServices[@]}"; do
-            if isContainerHealthy ${service}; then
-                healthyServices+=(${service})
-            elif isContainerUnhealthy ${service}; then
+            if isContainerHealthy "${service}"; then
+                healthyServices+=("${service}")
+            elif isContainerUnhealthy "${service}"; then
                 error "Service ${service} is unhealthy. Aborting!"
                 exit 1
             fi
@@ -33,7 +33,7 @@ function waitHealthyServices
 
         for service in "${healthyServices[@]}"; do
             # remove healthy service from wait services
-            waitServices=($(removeArrayItem ${service} "${waitServices[@]}"))
+            waitServices=($(removeArrayItem "${service}" "${waitServices[@]}"))
         done
 
         if [ ${#waitServices[@]} -eq 0 ]; then
@@ -56,6 +56,6 @@ function waitHealthyServices
         fi
 
         sleep ${seconds}
-        try=$((${try}+1))
+        try=$((try+1))
     done
 }

@@ -17,18 +17,28 @@ function backgroundColor
         return
     fi
 
+    # shellcheck disable=SC2034
     local COLOR_black='\033[97;40m'
+    # shellcheck disable=SC2034
     local COLOR_red='\033[97;41m'
+    # shellcheck disable=SC2034
     local COLOR_green='\033[97;42m'
+    # shellcheck disable=SC2034
     local COLOR_yellow='\033[97;43m'
+    # shellcheck disable=SC2034
     local COLOR_blue='\033[97;44m'
+    # shellcheck disable=SC2034
     local COLOR_magenta='\033[97;45m'
+    # shellcheck disable=SC2034
     local COLOR_cyan='\033[96;46m'
+    # shellcheck disable=SC2034
     local COLOR_white='\033[96;107m'
 
     local DEFAULT_COLOR='\033[49m'
 
-    eval "local color=\${COLOR_${2}}"
+    local color
+
+    eval "color=\${COLOR_${2}}"
 
     echo -en "${color}${message}${DEFAULT_COLOR}"
 }

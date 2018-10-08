@@ -17,7 +17,6 @@ function dockerCompose
 
     local environmentPath
     local projectNamePath
-    local environmentFile
 
     environmentPath=$(environmentFilePath "${path}" "${env}")
     projectNamePath=$(projectNameCacheFilePath "${dokmanDir}")
