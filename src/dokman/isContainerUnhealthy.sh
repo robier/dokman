@@ -8,5 +8,5 @@
 ###
 function isContainerUnhealthy
 {
-    isContainerHealthStatus ${1} 'unhealthy'
+    isContainerHealthStatus "${1}" 'unhealthy'
 }

@@ -86,9 +86,11 @@ function dokmanInstall
     exit 1
 }
 
-
+# shellcheck disable=SC2218
 dokmanOption "-h | --help" "dokmanHelp" "Shows this help message and exits"
+# shellcheck disable=SC2218
 dokmanOption "-v | --verbose" "verbose=true" "Prints out STDOUT of all commands"
+# shellcheck disable=SC2218
 dokmanOption "-c | --colors" "forceColors=true" "Force color output"
 
 if [ -f "${DOKMAN_SCRIPT_DIR}/.install.sh" ]; then
@@ -108,6 +110,7 @@ function _dokmanCompileOptionsCheck
         local option="${DOKMAN_REGISTERED_OPTIONS[i]})      ${DOKMAN_REGISTERED_OPTIONS[i+1]}"
         option+="\n"
         if [ "${DOKMAN_REGISTERED_OPTIONS[i+3]}" == 1 ]; then
+            # shellcheck disable=SC2016
             option+='if [ -z "${2}" ] || [ "${2:0:1}" == "-" ] ; then'
             option+="\n"
             option+="error \"Missing value for option \$(foregroundColor \${1} yellow)\"\n"
@@ -177,7 +180,7 @@ function dokmanValueOption
 cd "${DOKMAN_PROJECT_ROOT}"
 
 # run environment event if it exists
-runEventScript $(environmentFilePath "${DOKMAN_SCRIPT_DIR}" "${DOKMAN_ENV}") "before-install"
+runEventScript "$(environmentFilePath "${DOKMAN_SCRIPT_DIR}" "${DOKMAN_ENV}")" "before-install"
 
 # run global event if it exists
 runEventScript "${DOKMAN_SCRIPT_DIR}" "before-install"
@@ -185,7 +188,7 @@ runEventScript "${DOKMAN_SCRIPT_DIR}" "before-install"
 dokmanInstall
 
 # run environment event if it exists
-runEventScript $(environmentFilePath "${DOKMAN_SCRIPT_DIR}" "${DOKMAN_ENV}") "after-install"
+runEventScript "$(environmentFilePath "${DOKMAN_SCRIPT_DIR}" "${DOKMAN_ENV}")" "after-install"
 
 # run global event if it exists
 runEventScript "${DOKMAN_SCRIPT_DIR}" "after-install"

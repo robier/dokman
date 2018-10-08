@@ -16,7 +16,7 @@ function autoload
         exit 1
     fi
 
-    for file in ${path}/*.sh
+    for file in "${path}"/*.sh
     do
         if [[ -f "${file}" ]]; then
             source "${file}"

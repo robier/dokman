@@ -15,9 +15,13 @@ function runEventScript
         return
     fi
 
-    local commandPath="${path}/events/${event}.sh"
-    local currentPwd="$(pwd)"
-    local eventNameStyled=$(foregroundColor "${event}" "yellow")
+    local commandPath
+    local currentPwd
+    local eventNameStyled
+
+    commandPath="${path}/events/${event}.sh"
+    currentPwd="$(pwd)"
+    eventNameStyled=$(foregroundColor "${event}" "yellow")
 
     if [ -f "${commandPath}" ]; then
 

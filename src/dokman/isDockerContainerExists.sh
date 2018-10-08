@@ -13,7 +13,7 @@ function isDockerContainerExists
     containerName=${1}
 
     local containerId
-    containerId=$(docker/env ${DOKMAN_ENV} ps -q ${containerName})
+    containerId=$(docker/env "${DOKMAN_ENV}" ps -q "${containerName}")
 
     if [ "${containerId}" != "" ]; then
         return
