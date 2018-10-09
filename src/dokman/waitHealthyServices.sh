@@ -16,7 +16,7 @@ function waitHealthyServices
 
     local try=0
 
-    info "Waiting services [${allServices[*]}] for max of ${maxSeconds} seconds"
+    info "Waiting services [${allServices[*]}] for max of ${maxSeconds} tries (try per second)"
 
     while :
     do
@@ -25,9 +25,6 @@ function waitHealthyServices
         for service in "${waitServices[@]}"; do
             if isContainerHealthy "${service}"; then
                 healthyServices+=("${service}")
-            elif isContainerUnhealthy "${service}"; then
-                error "Service ${service} is unhealthy. Aborting!"
-                exit 1
             fi
         done
 
