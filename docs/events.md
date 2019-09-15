@@ -19,7 +19,9 @@ Every mayor event will trigger `before` and `after` event, so actual list of eve
 - `before-off` - dispatched before containers are stopped with `off` command
 - `after-off` - dispatched after all containers are stopped with `off` command
 
-In dokman there is 2 types of events, **global** and **environment**.
+In dokman there is 2 types of events, **global** and **environment**. User can create his
+own event scripts and call them via `runEvent 'custom-event'` for calling `custom-event.sh` script 
+that can exist as global or environment event.
 
 **Note:** on/off events are only called if no containers are active or if all container are down. 
 So if you have all containers down, and run `on` 2 times in row, only the 1st time, events will be triggered.
@@ -65,7 +67,7 @@ Environment event scripts are placed in `events` directory under desired `enviro
 └── ...
 ```
 
-In this example we can see that `dev` environment has all of possible events.
+In this example we can see that `dev` environment has all of predefined events.
 
 **Note:** All event scripts needs to have **sh** extension.
 
@@ -81,3 +83,5 @@ In this example we can see that `dev` environment has all of possible events.
 
 **Note:** When event is triggered, event script residing in environment will be triggered then global one if any of them
 exists.
+
+**Note:** User defined events can be created.

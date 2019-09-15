@@ -64,28 +64,20 @@ function dockerCompose
     fi
 
     if [ "on" == "${command}" ] && [ "${currentlyRunning}" -eq "0" ]; then
-        runEventScript "${environmentPath}" "before-on"
-        runEventScript "${DOKMAN_SCRIPT_DIR}" "before-on"
+        runEvent 'before-on'
     fi
 
     if [ "off" == "${command}" ] && [ "${currentlyRunning}" -gt "0" ]; then
-        runEventScript "${environmentPath}" "before-off"
-        runEventScript "${DOKMAN_SCRIPT_DIR}" "before-off"
+        runEvent 'before-off'
     fi
 
     eval "$(buildDockerComposeCommand "${environmentPath}" "${path}" "${arguments[@]}")";
 
-    if [ -f "${environmentPath}" ]; then
-        return
-    fi
-
     if [ "on" == "${command}" ] && [ "${currentlyRunning}" -eq "0" ]; then
-        runEventScript "${environmentPath}" "after-on"
-        runEventScript "${DOKMAN_SCRIPT_DIR}" "after-on"
+        runEvent 'after-on'
     fi
 
     if [ "off" == "${command}" ] && [ "${currentlyRunning}" -gt "0" ]; then
-        runEventScript "${environmentPath}" "after-off"
-        runEventScript "${DOKMAN_SCRIPT_DIR}" "after-off"
+        runEvent 'after-off'
     fi
 }
