@@ -20,6 +20,7 @@ to ease your way of writing install scripts:
 - `validateEnv` - validates provided env for existence
 - `validateHostEntries` - validates array of host strings in `/etc/hosts` file 
 - `waitHealthyService` - waits until all listed services becomes healthy
+- `runEvent` - runs custom user event
 
 **Note:** All dokman functions are also available in install script.
 
