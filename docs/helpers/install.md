@@ -8,20 +8,20 @@ accessible.
 Install script syntax looks like:
 
 ```bash
-docker/install [-v|--verbose] [-h|--help] [your registered options] environment
+docker/install [-v|--verbose] [-h|--help] [-c|--colors] [your registered options] environment
 ```
 
 Install is specific as it requires `.install.sh` file in docker root to work. There is a lot of special functions
 to ease your way of writing install scripts:
 - `dokmanInstall` - main installation function, all installation logic should go in that function
-- `dokmanRunCommand` - used for running any command (handles verbose mode) 1st parameter is a actual command, 2nd parameter is description
+- `runCommand` - used for running any command (handles verbose mode) 1st parameter is a actual command, 2nd parameter is description
 - `dokmanOption` - used for registering new option to install command
 - `dokmanValueOption` - used for registering new option to install command that will hold a value
-- `dokmanValidateEnv` - validates provided env for existence
-- `dokmanValidateHosts` - validates array of host strings in `/etc/hosts` file 
-- `dokmanWaitHealthyService` - waits until all listed services becomes healthy
+- `validateEnv` - validates provided env for existence
+- `validateHostEntries` - validates array of host strings in `/etc/hosts` file 
+- `waitHealthyService` - waits until all listed services becomes healthy
 
-**Note:** All dokman functions are also avaliable in install script.
+**Note:** All dokman functions are also available in install script.
 
 **Note:** You can register your own options via `dokmanOption` and `dokmanValueOption` functions, those new registered options
 would be shown when showing help for install script.
