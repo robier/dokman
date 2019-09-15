@@ -45,13 +45,17 @@ function runDockerContainer
     if inArray "--deps" "${dockerComposeOptions[@]}"; then
         dockerComposeOptions=("$(removeArrayItem "--deps" "${dockerComposeOptions[@]}")")
     else
-        dockerComposeOptions+=("--no-deps")
+        if ! inArray "--no-deps" "${dockerComposeOptions[@]}"; then
+            dockerComposeOptions+=("--no-deps")
+        fi
     fi
 
     if inArray "--no-rm" "${dockerComposeOptions[@]}"; then
         dockerComposeOptions=("$(removeArrayItem "--no-rm" "${dockerComposeOptions[@]}")")
     else
-        dockerComposeOptions+=("--rm")
+        if ! inArray "--rm" "${dockerComposeOptions[@]}"; then
+            dockerComposeOptions+=("--rm")
+        fi
     fi
 
     if [ "${#commands[@]}" -eq 0 ]; then # no commands provided
