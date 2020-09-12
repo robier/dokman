@@ -13,9 +13,13 @@ System creates few handy variables that you can use in your setup:
 
 **Note:** Special variables are also accessible in `YAML` files.
 
-**Note:** Variable `DOKMAN_HOST_IP` will be empty on Mac, if you are using Mac you should
-overwrite that variable in your `docker/.env` with value [host.docker.internal](https://docs.docker.com/docker-for-mac/networking/#there-is-no-docker0-bridge-on-macos) ie.
+Host IP under Docker Desktop
+----------------------------
+
+The variable `DOKMAN_HOST_IP` will be empty on Mac OS and Windows. If you are using the mentioned platforms, you should overwrite the variable in your `docker/.env` file with the `host.docker.internal` value:
 
 ```text
 DOKMAN_HOST_IP=host.docker.internal
 ```
+
+If you want more information, consult Docker Desktop's networking documentation for [Mac OS](https://docs.docker.com/docker-for-mac/networking/#there-is-no-docker0-bridge-on-macos) and [Windows](https://docs.docker.com/docker-for-windows/networking/#there-is-no-docker0-bridge-on-windows).

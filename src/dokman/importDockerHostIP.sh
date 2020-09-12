@@ -7,12 +7,13 @@
 ###
 function importDockerHostIP
 {
-    local hostIp
-    hostIp=""
+    local defaultGatewayIp
 
-    if isLinux; then
-        hostIp=$(ip -4 addr show docker0 | grep -Po 'inet \K([0-9]{1,3}\.){3}[0-9]{1,3}' --color=never)
+    # Platforms which use Docker Desktop for container management don't have a dedicated gateway network interface.
+    # Instead, it's possible to use the magic "host.docker.internal" DNS entry to find out the host's IP address.
+    if ! isDockerDesktop ; then
+        defaultGatewayIp="$(docker network inspect bridge --format '{{ (index .IPAM.Config 0).Gateway }}')"
     fi
 
-    export DOKMAN_HOST_IP="${hostIp}"
+    export DOKMAN_HOST_IP="${defaultGatewayIp}"
 }
