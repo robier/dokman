@@ -1,0 +1,13 @@
+#!/bin/bash
+CONFIG_FILE=.dokman_config
+FILE="$(pwd)/$CONFIG_FILE"
+
+if test -f "$FILE"; then
+  source $FILE
+
+  echo "$_DOKMAN_DIR/$@"
+
+(exec  "$_DOKMAN_DIR/$@")
+else
+  echo "$CONFIG_FILE does not exist."
+fi

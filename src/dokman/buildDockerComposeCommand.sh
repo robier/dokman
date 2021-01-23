@@ -36,6 +36,13 @@ function buildDockerComposeCommand
         local pathToYml="${path}/${line}"
         if [ -r "${pathToYml}" ]; then
             yamls+=("--file ${pathToYml}")
+
+            file_name="${pathToYml##*/}"
+            file_extension="${file_name##*.}"
+            file="${file_name%.*}"
+
+            yamls+=("--file ${file}_override.${file_extension}")
+
         fi
     done < "${configFile}"
 

@@ -42,6 +42,10 @@ readonly symlinkScripts=(
     install
 )
 
+readonly pathVariables=(
+    dokman
+)
+
 readonly gitIgnore=(
     "# exclude man .env file"
     /.env
@@ -134,6 +138,22 @@ do
         success "Symlink for file ${label} created"
     else
         info "Symlink ${label} already exists, skipping!"
+    fi
+done
+
+title "Adding commands to usr/local/bin..."
+
+for pathVariable in "${pathVariables[@]}"
+do
+    pathToScript="${installPath}/${pathVariable}"
+    label=$(foregroundColor "${pathVariable}" "yellow")
+
+    if [ ! -f /usr/local/bin/${pathVariable} ]
+    then
+      cp pathToScript /usr/local/bin/${pathVariable}
+      success "Added  ${label} to /usr/local/bin"
+    else
+        info "File ${label} already exists, skipping!"
     fi
 done
 
