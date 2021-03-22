@@ -179,6 +179,8 @@ function dokmanValueOption
 
 cd "${DOKMAN_PROJECT_ROOT}"
 
+loadEnvFiles "${DOKMAN_DIR}" "${DOKMAN_SCRIPT_DIR}" "${DOKMAN_ENV}"
+
 # run environment event if it exists
 runEventScript "$(environmentFilePath "${DOKMAN_SCRIPT_DIR}" "${DOKMAN_ENV}")" "before-install"
 
