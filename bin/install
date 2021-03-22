@@ -94,6 +94,10 @@ dokmanOption "-v | --verbose" "verbose=true" "Prints out STDOUT of all commands"
 dokmanOption "-c | --colors" "forceColors=true" "Force color output"
 
 if [ -f "${DOKMAN_SCRIPT_DIR}/.install.sh" ]; then
+    cd "${DOKMAN_PROJECT_ROOT}"
+
+    loadEnvFiles "${DOKMAN_DIR}" "${DOKMAN_SCRIPT_DIR}" "${DOKMAN_ENV}"
+
     source "${DOKMAN_SCRIPT_DIR}/.install.sh"
 else
     error "File missing $(foregroundColor "${DOKMAN_SCRIPT_DIR}/.install.sh")"
@@ -176,8 +180,6 @@ function dokmanValueOption
     error "Function $(foregroundColor "dokmanValueOption" "yellow") can not be used inside $(foregroundColor "dokmanInstall" "yellow") function"
     exit 1
 }
-
-cd "${DOKMAN_PROJECT_ROOT}"
 
 # run environment event if it exists
 runEventScript "$(environmentFilePath "${DOKMAN_SCRIPT_DIR}" "${DOKMAN_ENV}")" "before-install"
