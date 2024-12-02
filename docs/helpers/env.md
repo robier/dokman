@@ -2,21 +2,21 @@ env helper
 ----------
 
 Env helper script is here to ease our life when we want to interact with **dokman** environment. It's here for up/down 
-containers, checking logs, restarting containers... As env script is wrapper around plain `docker-compose` command you
-can do any of `docker-compose` commands on it (to see all available commands just run `docker-compose -h`).
+containers, checking logs, restarting containers... As env script is wrapper around plain `docker compose` command you
+can do any of `docker compose` commands on it (to see all available commands just run `docker compose -h`).
 
 Env script syntax looks like:
 ```bash
 docker/env <environment> <command> [<args...>]
 ```
 - `<environment>` - name of environment you want to interact with
-- `<command> [<args...>]` - one of `docker-compose` commands and arguments
+- `<command> [<args...>]` - one of `docker compose` commands and arguments
 
-**Note:** Aside default `docker-compose` commands there are also two **dokman** specific commands (`on` and `off`)
+**Note:** Aside default `docker compose` commands there are also two **dokman** specific commands (`on` and `off`)
 
 We introduced 2 new commands that are **dokman** specific:
-- `on` - it will run `docker-compose up -d --build --no-recreate` + **dokman** `on` [event](../events.md)
-- `off` - it will run `docker-compose down` + **dokman** `off` [event](../events.md)
+- `on` - it will run `docker compose up -d --build --no-recreate` + **dokman** `on` [event](../events.md)
+- `off` - it will run `docker compose down` + **dokman** `off` [event](../events.md)
 
 Examples:
 
@@ -48,7 +48,7 @@ Examples:
     ```bash
     docker/env prod logs -f prod 
     ```
-0) See parsed YAML file of `docker-compose` for **dev** environment:
+0) See parsed YAML file of `docker compose` for **dev** environment:
     ```bash
     docker/env dev config
     ```
@@ -66,7 +66,7 @@ Examples:
     ```
 
 This are just most used use cases, there is much more as those are not all
-`docker-compose` commands.
+`docker compose` commands.
 
 **Note:** Do not use `exec` or `run` commands on `env` helper scripts, as we have
 special wrappers for them, ie. [enter helper script](./enter.md) and [run helper script](./run.md).

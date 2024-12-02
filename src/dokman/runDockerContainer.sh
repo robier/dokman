@@ -16,7 +16,7 @@ function runDockerContainer
     local container=""
     local env=""
 
-    # iterate all arguments and decide witch ones belong to docker-compose and witch ones belongs to container
+    # iterate all arguments and decide witch ones belong to docker compose and witch ones belongs to container
 
     while [ "${#arguments[@]}" -ne 0 ] ; do
 

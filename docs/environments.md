@@ -63,7 +63,7 @@ Simple environment allows you to simply define list of `YAML` files that will be
 used in specific environment. Use simple environment when you don't need:
 - change any global variables
 - events
-- environment specific docker-compose override yml file
+- environment specific docker compose override yml file
 
 While complex environment allows you to change variables or use any of **dokman**
 events.

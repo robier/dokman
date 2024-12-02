@@ -5,7 +5,7 @@
  #
  # @param1 Path to env file
  # @param2 Path to compose files
- # @param3... Arguments that are passed to docker-compose command
+ # @param3... Arguments that are passed to "docker compose"/docker-compose command
 ###
 function buildDockerComposeCommand
 {
@@ -13,13 +13,17 @@ function buildDockerComposeCommand
     local path=${2}
     local arguments=${*:3}
 
-    local command='docker-compose'
+    local command="${DOKMAN_DOCKER_COMPOSE_COMMAND:-"docker-compose"}"
 
     local yamls=()
 
     # find environment file to use
     local configFile
     configFile=$(findEnvironmentFile "${envPath}")
+
+    if [ "${command}" == "docker-compose" ]; then
+        warning "docker-compose is deprecated and it will be removed in the future! Please use 'docker compose' plugin to orchestrate your docker containers. Check dokman documentation for more info."
+    fi
 
     if [ ! -f "${configFile}" ]; then
         error "Config file $(foregroundColor "${configFile}" "yellow") not found. Aborting!"
@@ -40,7 +44,7 @@ function buildDockerComposeCommand
     done < "${configFile}"
 
     if [ ${#yamls[@]} -eq 0 ]; then
-        error "No docker-compose yaml files detected in environment file $(foregroundColor "${configFile}" "yellow")"
+        error "No ${command} yaml files detected in environment file $(foregroundColor "${configFile}" "yellow")"
         exit 1
     fi
 

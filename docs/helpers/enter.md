@@ -2,14 +2,14 @@ enter helper
 ------------
 
 Enter helper script is here to ease our life when we want to enter or run arbitrary script on a **running** instance of
-container. It's basically a wrapper for `docker-compose exec` script.
+container. It's basically a wrapper for `docker compose exec` script.
 
 Enter script syntax looks like:
 ```bash
 docker/enter [<options>] <environment>:<service> [sh|bash] [<command> [<args...>]]
 ```
 - `[<options>]` - options that you can send to docker to change behavior (ie. `--user root` to access container as root 
-user), to see full list of available options please use `docker-compose exec -h` and check section **Options**
+user), to see full list of available options please use `docker compose exec -h` and check section **Options**
 - `<environment>:<service>` - if you want to access **php** service of **dev** environment you would use `dev:php`
 - `[sh|bash]` - in what shell you will be logged in when you go to interactive tty, `sh` shell is default as all
 containers have it by default

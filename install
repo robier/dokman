@@ -137,10 +137,17 @@ do
     fi
 done
 
-title "Setting project name..."
+title "Setting project default variables..."
 
 echo "COMPOSE_PROJECT_NAME=${DOKMAN_PROJECT_NAME}" > "${installPath}/.env.dist"
 success "Variable COMPOSE_PROJECT_NAME set as $(foregroundColor "${DOKMAN_PROJECT_NAME}" "yellow") in .env.dist configuration"
 
+if $(docker compose version > /dev/null 2>&1); then
+    # set 'docker compose' command for all new dokman project installations in this case we are backward compatible with already existing installations
+    echo 'DOKMAN_DOCKER_COMPOSE_COMMAND="docker compose"' > "${installPath}/.env.dist"
+    success "Variable DOKMAN_DOCKER_COMPOSE_COMMAND set as $(foregroundColor "docker compose" "yellow") in .env.dist configuration as we detected you have 'docker compose' plugin installed, to use 'docker-compose', just remove that ENV variable from .env.dist file."
+else
+    warning "We detected you do not have 'docker compose' installed. As this is a new installation we encourage you to install it. When you do the installation, will need to set DOKMAN_DOCKER_COMPOSE_COMMAND to 'docker compose' in .env.dist file to use it."
+fi
 
 success "Installation done!"
