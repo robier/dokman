@@ -11,8 +11,8 @@ function importEnv
     local path=${1}
 
     if [ -f "${path}" ]; then
-        # first regex removes comments (line starting with #, can have spaces before # char)
-        # second one removes empty lines (can have spaces)
-        export $(grep -v "^\(\s\+\)\?#" "${path}" | grep -v "^\(\s\+\)\?$" | xargs) > /dev/null
+        set -a
+        source "${path}"
+        set +a
     fi
 }

@@ -2,7 +2,7 @@
 
 
 ###
- # Wrapper for "docker-compose exec" command
+ # Wrapper for "docker compose exec" command
  #
  # @param1 Path to docker folder including it
  # @param2 Environment file name to load
@@ -17,7 +17,7 @@ function enterDockerContainer
     local container=""
     local env=""
 
-    # iterate all arguments and decide witch ones belong to docker-compose and witch ones belongs to container
+    # iterate all arguments and decide witch ones belong to docker compose and witch ones belongs to container
 
     while [ "${#arguments[@]}" -ne 0 ] ; do
 

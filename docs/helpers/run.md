@@ -1,15 +1,15 @@
 run helper
 ----------
 
-Run helper script is here to ease our life when we want to enter or run arbitrary script on a **non running** instance of
-container. It's basically a wrapper for `docker-compose run` script.
+Run helper script is here to ease our life when we want to enter or run arbitrary script on a **non-running** instance of
+container. It's basically a wrapper for `docker compose run` script.
 
 Run script syntax looks like:
 ```bash
 docker/run [<options>] <environment>:<service> [sh|bash] [<command> [<args...>]] 
 ```
-- `[<options>]` - options that you can send to docker to change behavior (ie. `--user root` to access container as root 
-user), to see full list of available options please use `docker-compose run -h` and check section **Options**
+- `[<options>]` - options that you can send to docker to change behavior (i.e. `--user root` to access container as root 
+user), to see full list of available options please use `docker compose run -h` and check section **Options**
 - `<environment>:<service>` - if you want to access **php** service of **dev** environment you would use `dev:php`
 - `[sh|bash]` - in what shell you will be logged in when you go to interactive tty, `sh` shell is default as all
 containers have it by default
@@ -19,7 +19,7 @@ containers have it by default
 
 **Note:** If you do not provide `[<command> [<args...>]]` part of command you will enter in interactive tty.
 
-Dokman changes default behavior of `docker-compose run` by turning on flags `--rm` and `--no-deps`(as we do not want to
+Dokman changes default behavior of `docker compose run` by turning on flags `--rm` and `--no-deps`(as we do not want to
 run linked services and we want to remove container after running in most cases). Those behaviors can easily be
 turned off as we introduced 2 new flags `--no-rm` and `--deps` (those flags belongs in `[<options>]` part of command).
 
