@@ -13,7 +13,7 @@ now developer has `dokman` for easier working with `docker compose` enabling com
 Main purpose for creating this library was to unify docker workflow on multiple projects.
 
 This library allows you to:
-- easily setup multiple environments of your docker setup (ie. production, development, test...)
+- easily setup multiple environments of your docker setup (i.e. production, development, test...)
 - have easy access to your docker containers (less typing)
 - same docker philosophy on multiple projects
 - whole docker is wrapped in easy to use shorthands
@@ -37,7 +37,7 @@ command with `sudo`.
 sudo usermod -aG docker ${USER}
 ```
 
-**Note:** Dokman will populate environment variables with your current user and group id so you can easily create
+**Note:** Dokman will populate environment variables with your current user and group ID, so you can easily create
 shadow user.
 
 Index

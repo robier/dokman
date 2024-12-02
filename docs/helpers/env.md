@@ -65,9 +65,8 @@ Examples:
     docker/env dev restart php nginx
     ```
 
-This are just most used use cases, there is much more as those are not all
+Those are just the most used cases, there is much more as those are not all
 `docker compose` commands.
 
 **Note:** Do not use `exec` or `run` commands on `env` helper scripts, as we have
-special wrappers for them, ie. [enter helper script](./enter.md) and [run helper script](./run.md).
-
+special wrappers for them, i.e. [enter helper script](./enter.md) and [run helper script](./run.md).

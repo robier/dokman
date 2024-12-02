@@ -4,7 +4,7 @@
  # Imports env variables from .env.dist and .env files and sources .bootstrap.sh from provided path
  #
  # @param1 string Path to docker folder where .env.dist and .env files are
- # @return bool Returns false if provided path is not a directory, ie. config could not be loaded
+ # @return bool Returns false if provided path is not a directory, i.e. config could not be loaded
 ###
 function importConfigurations
 {

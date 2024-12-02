@@ -15,6 +15,6 @@ install will wait until all listed services are healthy (refer to [install](./he
 function `dokmanWaitHealthyService`).
 
 Recommended directory for placing health check scripts would be `docker/scripts/health-check`. Name of the script
-should be the same of the name of service it belongs ie. `docker/scripts/health-check/mysql`.
+should be the same of the name of service it belongs i.e. `docker/scripts/health-check/mysql`.
 
 **Note:** Health check script must be executable. 

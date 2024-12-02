@@ -8,7 +8,7 @@ Enter script syntax looks like:
 ```bash
 docker/enter [<options>] <environment>:<service> [sh|bash] [<command> [<args...>]]
 ```
-- `[<options>]` - options that you can send to docker to change behavior (ie. `--user root` to access container as root 
+- `[<options>]` - options that you can send to docker to change behavior (i.e. `--user root` to access container as root 
 user), to see full list of available options please use `docker compose exec -h` and check section **Options**
 - `<environment>:<service>` - if you want to access **php** service of **dev** environment you would use `dev:php`
 - `[sh|bash]` - in what shell you will be logged in when you go to interactive tty, `sh` shell is default as all

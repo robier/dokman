@@ -53,7 +53,7 @@ entry script, or some helper script that needs to be available inside container.
 - `services` - Directory holding all **docker compose** `yml` files. Philosophy is to create
 little building blocks as possible, so it can be easily reused. Having that
 in mind you can make folders and sub folders any way you like and organise your `yml` files 
-(ie. you can make a folder with `ports` where you will have only yml parts that
+(i.e. you can make a folder with `ports` where you will have only yml parts that
 exposes some service port inside docker to host machine).
 
 **Note:** You can add additional folders and sub-folders that suits your project needs.

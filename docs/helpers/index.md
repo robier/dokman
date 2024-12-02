@@ -21,4 +21,3 @@ need to properly function
 
 To speed up working with docker, some **docker compose** flags that needed to be called explicitly
 are now implicit, and can be turned off by new flags.
-
